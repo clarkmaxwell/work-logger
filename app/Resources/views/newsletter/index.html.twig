@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Newsletters list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Createdat</th>
+                <th>Status</th>
+                <th>Id</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for newsletter in newsletters %}
+            <tr>
+                <td><a href="{{ path('newsletter_show', { 'id': newsletter.id }) }}">{{ newsletter.email }}</a></td>
+                <td>{% if newsletter.createdAt %}{{ newsletter.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if newsletter.status %}Yes{% else %}No{% endif %}</td>
+                <td>{{ newsletter.id }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('newsletter_show', { 'id': newsletter.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('newsletter_edit', { 'id': newsletter.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('newsletter_new') }}">Create a new newsletter</a>
+        </li>
+    </ul>
+{% endblock %}
