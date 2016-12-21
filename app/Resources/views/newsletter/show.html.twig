@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Newsletter</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Email</th>
+                <td>{{ newsletter.email }}</td>
+            </tr>
+            <tr>
+                <th>Createdat</th>
+                <td>{% if newsletter.createdAt %}{{ newsletter.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{% if newsletter.status %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ newsletter.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('newsletter_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('newsletter_edit', { 'id': newsletter.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

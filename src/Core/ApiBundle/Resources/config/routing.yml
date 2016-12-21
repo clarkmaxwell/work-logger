@@ -1,0 +1,7 @@
+api_homepage:
+    path:     /
+    defaults: { _controller: ApiBundle:Default:index }
+
+newsletter:
+    type: rest
+    resource: Core\ApiBundle\Controller\NewsletterController
