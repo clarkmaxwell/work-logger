@@ -82,6 +82,9 @@ fos_user:
     db_driver: orm
     firewall_name: api
     user_class: Core\ApiBundle\Entity\User
+    from_email:
+        address: turkersenturk@gmail.com
+        sender_name: Turker Senturk
 
 fos_oauth_server:
     db_driver:           orm
