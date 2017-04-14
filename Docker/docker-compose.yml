@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+    db:
+        image: mysql
+        volumes:
+            - "./.data/db:/var/lib/mysql"
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: worklogger
+            MYSQL_USER: user
+            MYSQL_PASSWORD: userpass
+    php:
+        build: php7-fpm
+        volumes:
+            - "../:/var/www/work-logger"
+    nginx:
+        build: nginx
+        ports:
+            - 80:80
+        volumes_from:
+            - php
+        volumes:
+            - ./logs/nginx/:/var/log/nginx
