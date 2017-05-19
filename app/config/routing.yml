@@ -1,3 +1,7 @@
+app_log_header:
+    resource: "@AppBundle/Controller/LogHeaderController.php"
+    type:     annotation
+
 app_newsletter:
     resource: "@AppBundle/Controller/NewsletterController.php"
     type:     annotation

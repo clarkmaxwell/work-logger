@@ -77,6 +77,12 @@ fos_rest:
     format_listener:
         enabled: true
     disable_csrf_role: ROLE_API
+    body_converter:
+        enabled: true
+        validate: true
+    view:
+        mime_types:
+          json: ['application/json']
 
 fos_user:
     db_driver: orm

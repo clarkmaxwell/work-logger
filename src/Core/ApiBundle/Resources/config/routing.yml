@@ -5,3 +5,7 @@ api_homepage:
 newsletter:
     type: rest
     resource: Core\ApiBundle\Controller\NewsletterController
+
+logmessage:
+    type: rest
+    resource: Core\ApiBundle\Controller\LogMessageController

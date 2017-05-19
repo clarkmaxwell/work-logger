@@ -16,6 +16,11 @@ monolog:
         nested:
             type:  stream
             path:  "%kernel.logs_dir%/%kernel.environment%.log"
-            level: debug
         console:
             type:  console
+        file_log:
+          type: stream
+          # log to var/logs/(environment).log
+          path: "%kernel.logs_dir%/%kernel.environment%.log"
+          # log *all* messages (debug is lowest level)
+          level: info

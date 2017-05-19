@@ -16,3 +16,4 @@ phpunit.xml.dist
 /vendor/
 /web/bundles/
 .idea/
+Docker/*
