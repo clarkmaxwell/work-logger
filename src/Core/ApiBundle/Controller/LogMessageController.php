@@ -8,14 +8,17 @@
 
 namespace Core\ApiBundle\Controller;
 
+use Core\ApiBundle\Entity\LogHeader;
 use Core\ApiBundle\Entity\LogMessage;
 use Doctrine\Common\Util\Debug;
+use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\View\View;
 use Monolog\Logger;
+use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Form;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -35,13 +38,27 @@ class LogMessageController extends FOSRestController
      */
     public function cgetAction(){
         $logMessages = $this->getDoctrine()->getRepository("ApiBundle:LogMessage")->findAll();
-        $this->get("logger")->info("deneme yazısı");
 
         $view = $this->view($logMessages, 200);
         return $this->handleView($view);
     }
 
+    /**
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getAction($id){
+        $logMessage = $this->getDoctrine()->getRepository("ApiBundle:LogMessage")->find($id);
 
+        $view = $this->view($logMessage, 200);
+        return $this->handleView($view);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function postAction(Request $request)
     {
         $logMessage = new LogMessage();
@@ -49,8 +66,10 @@ class LogMessageController extends FOSRestController
         $form->handleRequest($request);
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getEntityManager();
+            $this->renderMessageByTemplate($logMessage);
             $em->persist($logMessage);
             $em->flush();
+            $this->addLogHeaders($request, $logMessage, $em);
             $view = View::create($logMessage, 200);
         } else {
             $view = View::create($form, 400);
@@ -92,5 +111,34 @@ class LogMessageController extends FOSRestController
         $em->flush($logMessage);
         $view = View::create($logMessage, 200);
         return $this->handleView($view);
+    }
+
+    /**
+     * @param LogMessage $logMessage
+     */
+    public function renderMessageByTemplate($logMessage)
+    {
+        /** @var \Twig_Environment $twigEnvironment */
+        $twigEnvironment = $this->get("twig");
+        $template = $twigEnvironment->createTemplate($logMessage->getTemplate()->getRawContent());
+        $message = $template->render(["content" => $logMessage->getContent()]);
+        $logMessage->setContent($message);
+    }
+
+    /**
+     * @param Request $request
+     * @param LogMessage $logMessage
+     * @param EntityManager $em
+     */
+    public function addLogHeaders(Request $request, $logMessage, $em)
+    {
+        foreach ($request->headers->all() as $item => $value) {
+            $logHeader = new LogHeader();
+            $logHeader->setVarKey($item);
+            $logHeader->setVarValue($value[0]);
+            $logHeader->setLogMessage($logMessage);
+            $em->persist($logHeader);
+            $em->flush($logHeader);
+        }
     }
 }

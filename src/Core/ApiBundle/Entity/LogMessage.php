@@ -71,6 +71,12 @@ class LogMessage
      */
     private $user;
 
+    /**
+     * @var LogHeader
+     * @ORM\OneToMany(targetEntity="LogHeader", mappedBy="logMessage")
+     */
+    private $headers;
+
 
 
     /**
@@ -228,13 +234,28 @@ class LogMessage
     }
 
     /**
+     * @return LogHeader
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    /**
+     * @param LogHeader $headers
+     */
+    public function setHeaders($headers)
+    {
+        $this->headers = $headers;
+    }
+
+
+    /**
      * @ORM\PrePersist
      */
     public function prePersist(){
         if($this->getCreatedAt() == null){
             $this->setCreatedAt(new \DateTime());
-        }
-        if($this->getUpdatedAt() == null){
             $this->setUpdatedAt(new \DateTime());
         }
         $this->setStatus(true);
